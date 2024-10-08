@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Constants\Finance;
+
+
+class TransactionActivityConstants
+{
+    const USER_SUBSCRIPTION_VIA_CATHOLICPAY = "USER_SUBSCRIPTION_VIA_CATHOLICPAY";
+    const PAYMENT_WITH_SQUAD_VIA_WEB = "PAYMENT_WITH_SQUAD_VIA_WEB";
+    const PAYMENT_WITH_BANK_PROOF = "PAYMENT_WITH_BANK_PROOF";
+    const SENDING_OF_SMS = "SENDING_OF_SMS";
+}

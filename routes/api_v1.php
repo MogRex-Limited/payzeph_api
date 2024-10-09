@@ -1,27 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\User\TwoFactorController;
 use App\Http\Controllers\Api\V1\Auth\User\UserLoginController;
 use App\Http\Controllers\Api\V1\Auth\User\UserPasswordController;
 use App\Http\Controllers\Api\V1\Auth\User\UserRegisterController;
 use App\Http\Controllers\Api\V1\Auth\User\UserVerificationController;
 use App\Http\Controllers\Api\V1\General\GeneralController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
-use App\Http\Controllers\Api\V1\User\Finance\Plan\PlanController;
-use App\Http\Controllers\Api\V1\User\Finance\Pricing\PricingController;
 use App\Http\Controllers\Api\V1\User\Finance\Payment\PaymentController;
-use App\Http\Controllers\Api\V1\User\Finance\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\V1\User\Finance\Transaction\TransactionController;
-use App\Http\Controllers\Api\V1\User\Messaging\MessageController;
-use App\Http\Controllers\Api\V1\User\Phonebook\PhonebookController;
-use App\Http\Controllers\Api\V1\User\Phonebook\PhonebookGroupController;
-use App\Http\Controllers\Webhook\SquadWehbookHandlingController;
-use App\Http\Controllers\Api\V1\User\SenderIdentifier\SenderIdentifierController;
 use App\Http\Controllers\Api\V1\User\Setting\ApiCredentialController;
 use App\Http\Controllers\Api\V1\User\Setting\ProfileController;
-use App\Http\Controllers\Api\V1\User\Template\TemplateController;
 use Illuminate\Support\Facades\Route;
-
-Route::post('/squad/webhook/verifications', [SquadWehbookHandlingController::class, 'handleWebhook'])->name('handle-squad-webhook');
 
 Route::middleware(["apiKey"])->group(function () {
     Route::prefix("user")->as("user.")->group(function () {
@@ -44,39 +34,20 @@ Route::middleware(["apiKey"])->group(function () {
             });
         });
 
-        Route::get("pricing", [PricingController::class, "index"])->name("pricing.index");
-        Route::get("pricing/{id}/show", [PricingController::class, "show"])->name("pricing.show");
-        Route::get("pricing/calculate", [PricingController::class, "calculate"])->name("pricing.calculate");
+        Route::middleware(["auth:sanctum"])->group(function () {
+            
+            Route::get('/2fa/generate-secret', [TwoFactorController::class, 'generateSecretKey']);
+            Route::post('/2fa/enable', [TwoFactorController::class, 'enable2FA']);
+            Route::post('/2fa/disable', [TwoFactorController::class, 'disable2FA']);
 
-        Route::middleware("auth:sanctum")->group(function () {
             Route::prefix("transactions")->as("transactions.")->group(function () {
                 Route::get("/", [TransactionController::class, "index"]);
                 Route::get("{transaction}/show", [TransactionController::class, "show"]);
             });
 
             Route::apiResources([
-                "phonebook-groups" => PhonebookGroupController::class,
-                "phonebook" => PhonebookController::class,
-                "sender-identifiers" => SenderIdentifierController::class,
-                "templates" => TemplateController::class,
+                
             ]);
-
-            Route::prefix("phonebook")->as("phonebook.")->group(function () {
-                Route::post("delete-items", [PhonebookController::class, "deleteItems"])->name("delete-items");
-                Route::post("import", [PhonebookController::class, "importCsv"])->name("import");
-                Route::post("enter-contact", [PhonebookController::class, "writeUpload"])->name("write-upload");
-            });
-
-            Route::prefix("billings")->group(function () {
-                Route::get("plans", [PlanController::class, "index"]);
-                Route::get("plans/show/{plan}", [PlanController::class, "show"]);
-
-                Route::prefix("subscriptions")->group(function () {
-                    Route::get("/", [SubscriptionController::class, "index"]);
-                    Route::get("show/{subscription}", [SubscriptionController::class, "show"]);
-                    Route::post("initiate", [SubscriptionController::class, "subscribe"]);
-                });
-            });
 
             Route::prefix("payments")->as("payments.")->group(function () {
                 Route::post("initiate", [PaymentController::class, "initiate"])->name("initiate");
@@ -94,13 +65,6 @@ Route::middleware(["apiKey"])->group(function () {
                     Route::get("refresh", [ApiCredentialController::class, "refresh"])->name("refresh");
                     Route::post("update", [ApiCredentialController::class, "update"])->name("update");
                 });
-            });
-
-            Route::prefix("messaging")->as("messaging.")->group(function () {
-                Route::get("/", [MessageController::class, "index"])->name("index");
-                Route::get("{id}/show", [MessageController::class, "show"])->name("show");
-                Route::post("send", [MessageController::class, "send"])->name("send");
-                Route::post("template/send", [MessageController::class, "sendViaTemplate"])->name("send");
             });
         });
     });

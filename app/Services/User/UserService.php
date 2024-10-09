@@ -3,7 +3,6 @@
 namespace App\Services\User;
 
 use App\Constants\General\StatusConstants;
-use App\Exceptions\General\GeneralException;
 use App\Exceptions\General\InvalidRequestException;
 use App\Exceptions\General\ModelNotFoundException;
 use App\Models\User;
@@ -61,7 +60,7 @@ class UserService
         $data = self::validate($data);
         $data = array_merge([
             'status' => StatusConstants::ACTIVE,
-            "uuid" => $this->generateUuid($data["first_name"], $data["last_name"])
+            "zeph_id" => $this->generateUuid($data["first_name"], $data["last_name"])
         ], $data);
 
         $data['password'] = Hash::make($data['password']);
@@ -85,29 +84,30 @@ class UserService
         return compact('first_name', 'middle_name', 'last_name');
     }
 
-    function generateUuid($firstName, $lastName)
+    function generateUniqueCode()
     {
-        // Concatenate first name and last name
-        $fullName = $firstName . ' ' . $lastName;
-
-        // Remove spaces and convert to lowercase for consistency
-        $fullName = strtolower(str_replace(' ', '', $fullName));
-
-        $existing = User::where("uuid", $fullName)->get()->toArray();
-
-        if (count($existing) > 0) {
-            $count = 2;
-            $newId = $fullName . '-' . $count;
-            while (in_array($newId, $existing)) {
-                $count++;
-                $newId = $fullName . "-" . $count;
-            }
-
-            return $newId;
+        // Generate random numbers for the format ZXXXX-XXX (where X are random digits)
+        $prefix = 'Z'; // Starting with "Z"
+        $firstPart = str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT); // Generate a 4-digit number, pad with zeros if necessary
+        $secondPart = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT); // Generate a 3-digit number, pad with zeros if necessary
+    
+        // Concatenate to form the code in ZXXXX-XXX format
+        $uniqueCode = $prefix . $firstPart . '-' . $secondPart;
+    
+        // Check if the code already exists in the database
+        $existing = User::where('zeph_id', $uniqueCode)->exists();
+    
+        // If it exists, regenerate a new code until a unique one is found
+        while ($existing) {
+            $firstPart = str_pad(mt_rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            $secondPart = str_pad(mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
+            $uniqueCode = $prefix . $firstPart . '-' . $secondPart;
+            $existing = User::where('zeph_id', $uniqueCode)->exists();
         }
-
-        return $fullName;
-    }
+    
+        // Return the unique code
+        return $uniqueCode;
+    }    
 
     public function updatePassword(array $data)
     {

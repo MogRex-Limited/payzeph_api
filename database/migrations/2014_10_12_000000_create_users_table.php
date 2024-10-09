@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->string('email')->unique();
             $table->string("phone_number")->nullable();
-            $table->string("uuid")->unique();
+            $table->string('zeph_id')->unique();
             $table->unsignedBigInteger("avatar_id")->nullable();
             $table->string('status')->default(StatusConstants::ACTIVE);
             $table->string('password');

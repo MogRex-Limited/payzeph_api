@@ -16,8 +16,9 @@ class CreateWalletsTable extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->constrained("users");
-            $table->string("type");
+            $table->foreignId("user_id")->constrained("users")->cascadeOnDelete();
+            $table->foreignId("currency_id")->constrained("currencies")->cascadeOnDelete();
+            $table->string("type"); // Fiat, Token
             $table->string("number");
             $table->double("balance")->default(0);
             $table->double("locked_balance")->default(0);

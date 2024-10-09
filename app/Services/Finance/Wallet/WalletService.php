@@ -29,25 +29,7 @@ class WalletService
         return $wallet;
     }
 
-    public static function walletNotFound()
-    {
-        throw new ModelNotFoundException(
-            "Wallet not found",
-            self::WALLET_NOT_FOUND
-        );
-    }
-
-
-    public static function getById($id): Wallet
-    {
-        $wallet = Wallet::where("id", $id)->first();
-
-        if (empty($wallet)) {
-            self::walletNotFound();
-        }
-
-        return $wallet;
-    }
+   
 
     public static function debit(Wallet $wallet, float $amount)
     {
@@ -74,27 +56,5 @@ class WalletService
         ]);
 
         return $wallet->refresh();
-    }
-
-    public static function validate(array $data, $id = null): array
-    {
-        $validator = Validator::make($data, [
-            "user_id" => "required|exists:users,id",
-            "status" => "nullable|string",
-        ]);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        return $validator->validated();
-    }
-
-    public static function create(array $data, $id = null)
-    {
-        $data = self::validate($data);
-        $wallet = Wallet::create($data);
-
-        return $wallet;
     }
 }

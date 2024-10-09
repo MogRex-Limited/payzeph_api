@@ -27,6 +27,20 @@ function slugify($value)
     return Str::slug($value);
 }
 
+function generateRandomDigits($length, $string = false)
+{
+    $min = (int) pow(10, $length - 1);
+    $max = (int) (pow(10, $length) - 1);
+
+    $digits = random_int($min, $max);
+
+    if ($string == true) {
+        return (string)$digits;
+    } else {
+        return (int)$digits;
+    }
+}
+
 function encrypt_decrypt($action, $string)
 {
     try {

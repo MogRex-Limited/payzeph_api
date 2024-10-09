@@ -17,6 +17,8 @@ class CreateWalletsTable extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained("users");
+            $table->string("type");
+            $table->string("number");
             $table->double("balance")->default(0);
             $table->double("locked_balance")->default(0);
             $table->double("total_credit")->default(0);

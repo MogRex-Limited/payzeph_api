@@ -60,7 +60,7 @@ class UserService
         $data = self::validate($data);
         $data = array_merge([
             'status' => StatusConstants::ACTIVE,
-            "zeph_id" => $this->generateUuid($data["first_name"], $data["last_name"])
+            "zeph_id" => $this->generateZephCode($data["first_name"], $data["last_name"])
         ], $data);
 
         $data['password'] = Hash::make($data['password']);
@@ -84,7 +84,7 @@ class UserService
         return compact('first_name', 'middle_name', 'last_name');
     }
 
-    function generateUniqueCode()
+    function generateZephCode()
     {
         // Generate random numbers for the format ZXXXX-XXX (where X are random digits)
         $prefix = 'Z'; // Starting with "Z"

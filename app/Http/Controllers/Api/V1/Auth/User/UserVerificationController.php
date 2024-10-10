@@ -21,21 +21,13 @@ class UserVerificationController extends Controller
     }
     public function request(Request $request)
     {
-        DB::beginTransaction();
         try {
-            $this->user_verify_service->sendPin(auth()->user());
-            DB::commit();
+            $this->user_verify_service->request($request->all());
             return ApiHelper::validResponse("Verification pin sent successfully");
         } catch (ValidationException $e) {
-            DB::rollBack();
-            return ApiHelper::inputErrorResponse($this->validationErrorMessage, ApiConstants::VALIDATION_ERR_CODE, $e);
+            return ApiHelper::inputErrorResponse($this->validationErrorMessage, ApiConstants::VALIDATION_ERR_CODE, null, $e);
         } catch (Exception $e) {
-            DB::rollBack();
-            return ApiHelper::problemResponse(
-                $this->serverErrorMessage,
-                ApiConstants::SERVER_ERR_CODE,
-                $e
-            );
+            return ApiHelper::problemResponse($this->serverErrorMessage, ApiConstants::SERVER_ERR_CODE, null, $e);
         }
     }
 
@@ -43,20 +35,13 @@ class UserVerificationController extends Controller
     {
         try {
             $this->user_verify_service->verify($request->all());
-            return ApiHelper::validResponse("Verification successfully");
+            return ApiHelper::validResponse("Email verified successfully");
         } catch (ValidationException $e) {
-            return ApiHelper::inputErrorResponse($this->validationErrorMessage, ApiConstants::VALIDATION_ERR_CODE, $e);
+            return ApiHelper::inputErrorResponse($this->validationErrorMessage, ApiConstants::VALIDATION_ERR_CODE, null, $e);
         } catch (PinException $e) {
-            return ApiHelper::problemResponse(
-                $e->getMessage(),
-                ApiConstants::BAD_REQ_ERR_CODE,
-            );
+            return ApiHelper::problemResponse($e->getMessage(), ApiConstants::BAD_REQ_ERR_CODE);
         } catch (Exception $e) {
-            return ApiHelper::problemResponse(
-                $this->serverErrorMessage,
-                ApiConstants::SERVER_ERR_CODE,
-                $e
-            );
+            return ApiHelper::problemResponse($this->serverErrorMessage, ApiConstants::SERVER_ERR_CODE, null, $e);
         }
     }
 }

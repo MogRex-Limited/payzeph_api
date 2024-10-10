@@ -2,21 +2,25 @@
 
 namespace App\Services\Auth\User;
 
+use App\Constants\Finance\CurrencyConstants;
+use App\Models\Currency;
 use App\Models\User;
 use App\Services\User\UserService;
 use App\Services\Auth\User\UserVerifyService;
+use App\Services\Finance\Wallet\WalletService;
 use App\Services\Notification\AppMailerService;
 
 class UserRegistrationService
 {
-
     public $user_service;
+    public $wallet_service;
     public $user_verify_service;
 
     public function __construct()
     {
         $this->user_service = new UserService;
         $this->user_verify_service = new UserVerifyService;
+        $this->wallet_service = new WalletService;
     }
 
     public function create(array $data): User
@@ -29,6 +33,18 @@ class UserRegistrationService
     public  function postRegisterActions(User $user)
     {
         // $this->sendWelcomeMessage($user);
+
+        $currency = Currency::status()
+            ->where("group", CurrencyConstants::TOKEN_GROUP)
+            ->where("type", CurrencyConstants::USDC_TOKEN)
+            ->first();
+            
+        // Create USDC Wallet
+        $this->wallet_service->create([
+            "user_id" => $user->id,
+            "type" => CurrencyConstants::TOKEN_GROUP,
+            "currency_id" => $currency?->id
+        ]);
     }
 
     private function sendWelcomeMessage(User $user)

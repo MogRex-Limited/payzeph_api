@@ -19,38 +19,42 @@ class CurrencyTableSeeder extends Seeder
         $currencies = [
             [
                 "name" => "Nigerian Naira",
-                "group" => CurrencyConstants::CURRENCY_GROUP,
+                "group" => CurrencyConstants::FIAT_GROUP,
                 "type" => CurrencyConstants::NAIRA_CURRENCY,
-                "price_per_dollar" => 1500,
                 "short_name" => "NGN",
-                "logo" => "₦",
+                "symbol" => "₦",
                 "status" => StatusConstants::ACTIVE
             ],
             [
                 "name" => "Us Dollar",
-                "group" => CurrencyConstants::CURRENCY_GROUP,
+                "group" => CurrencyConstants::FIAT_GROUP,
                 "type" => CurrencyConstants::DOLLAR_CURRENCY,
-                "price_per_dollar" => 1,
                 "short_name" => "USD",
-                "logo" => "$",
+                "symbol" => "$",
                 "status" => StatusConstants::ACTIVE
             ],
             [
                 "name" => "Euro",
-                "group" => CurrencyConstants::CURRENCY_GROUP,
+                "group" => CurrencyConstants::FIAT_GROUP,
                 "type" => CurrencyConstants::EURO_CURRENCY,
-                "price_per_dollar" =>  0.8,
                 "short_name" => "EUR",
-                "logo" => "€",
+                "symbol" => "€",
                 "status" => StatusConstants::ACTIVE
             ],
             [
                 "name" => "Pound",
-                "group" => CurrencyConstants::CURRENCY_GROUP,
+                "group" => CurrencyConstants::FIAT_GROUP,
                 "type" => CurrencyConstants::POUND_CURRENCY,
-                "price_per_dollar" =>  0.5,
                 "short_name" => "GBP",
-                "logo" => "£",
+                "symbol" => "£",
+                "status" => StatusConstants::ACTIVE
+            ],
+            [
+                "name" => "USDC",
+                "group" => CurrencyConstants::TOKEN_GROUP,
+                "type" => CurrencyConstants::USDC_TOKEN,
+                "short_name" => "USDC",
+                "symbol" => "USDC",
                 "status" => StatusConstants::ACTIVE
             ],
         ];

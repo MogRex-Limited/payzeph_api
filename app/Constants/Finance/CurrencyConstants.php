@@ -10,7 +10,10 @@ class CurrencyConstants
     const NAIRA_CURRENCY = "Naira";
     const EURO_CURRENCY = "Euro";
     const POUND_CURRENCY = "Pound";
-    const COIN_GROUP = "Coin";
+    const TOKEN_GROUP = "Token";
+    const FIAT_GROUP = "Fiat";
+
+    const USDC_TOKEN = "USDC";
 
     const GROUP_BY_TYPE = [
         self::DOLLAR_CURRENCY => self::CURRENCY_GROUP,
@@ -54,11 +57,6 @@ class CurrencyConstants
     ];
 
     const FLUTTERWAVE_SUPPORTED_CURRENCIES = ["USD", "NGN"];
-
-    // public static function toDollar($rate)
-    // {
-    //     return 1 / $rate;
-    // }
 
     public static function fromDollar($amount, $price_per_dollar)
     {

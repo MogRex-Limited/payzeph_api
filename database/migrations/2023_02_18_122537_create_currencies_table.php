@@ -18,13 +18,12 @@ class CreateCurrenciesTable extends Migration
             $table->id();
             $table->string("name");
             $table->enum("group" , [
-                CurrencyConstants::CURRENCY_GROUP,
-                CurrencyConstants::COIN_GROUP,
+                CurrencyConstants::FIAT_GROUP,
+                CurrencyConstants::TOKEN_GROUP,
             ]);
             $table->string("type", 50)->unique();
-            $table->double("price_per_dollar");
             $table->string("short_name", 20)->unique();
-            $table->string("logo");
+            $table->string("symbol");
             $table->string("status");
             $table->timestamps();
             $table->softDeletes();

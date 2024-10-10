@@ -89,7 +89,7 @@ class UserVerifyService
                     throw new PinException("The code is invalid. Kindly request a new code.");
                 }
             } else {
-                if (strtolower($pin?->user?->email) != strtolower($data["email"])) {
+                if (strtolower($pin?->model?->email) != strtolower($data["email"])) {
                     throw new PinException("The email address does not match the code. Kindly request a new code.");
                 }
             }

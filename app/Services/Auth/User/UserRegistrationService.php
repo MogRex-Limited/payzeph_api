@@ -38,8 +38,19 @@ class UserRegistrationService
             ->where("group", CurrencyConstants::TOKEN_GROUP)
             ->where("type", CurrencyConstants::USDC_TOKEN)
             ->first();
-            
+
         // Create USDC Wallet
+        $this->wallet_service->create([
+            "user_id" => $user->id,
+            "type" => CurrencyConstants::TOKEN_GROUP,
+            "currency_id" => $currency?->id
+        ]);
+
+        $currency = Currency::status()
+            ->where("group", CurrencyConstants::FIAT_GROUP)
+            ->where("type", CurrencyConstants::DOLLAR_CURRENCY)
+            ->first();
+
         $this->wallet_service->create([
             "user_id" => $user->id,
             "type" => CurrencyConstants::TOKEN_GROUP,

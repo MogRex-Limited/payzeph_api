@@ -28,12 +28,14 @@ Route::middleware(["apiKey"])->group(function () {
                 Route::post("/reset", [UserPasswordController::class,  "resetPassword"])->name("reset_password");
             });
 
-            Route::post('/request', [UserVerificationController::class, 'request'])->name("request");
-            Route::post("/verify", [UserVerificationController::class,  "verify"])->name("verify");
+            Route::prefix("otp")->as("otp.")->group(function () {
+                Route::post('/request', [UserVerificationController::class, 'request'])->name("request");
+                Route::post("/verify", [UserVerificationController::class,  "verify"])->name("verify");
+            });
         });
 
         Route::middleware(["auth:sanctum"])->group(function () {
-
+            
             Route::get('/2fa/generate-secret', [TwoFactorController::class, 'generateSecretKey']);
             Route::post('/2fa/enable', [TwoFactorController::class, 'enable2FA']);
             Route::post('/2fa/disable', [TwoFactorController::class, 'disable2FA']);
@@ -43,7 +45,9 @@ Route::middleware(["apiKey"])->group(function () {
                 Route::get("{transaction}/show", [TransactionController::class, "show"]);
             });
 
-            Route::apiResources([]);
+            Route::apiResources([
+                
+            ]);
 
             Route::prefix("payments")->as("payments.")->group(function () {
                 Route::post("initiate", [PaymentController::class, "initiate"])->name("initiate");
